@@ -3,7 +3,7 @@ from zjupinche.decorators import json_request
 from . import zjuAuth
 from .models import *
 import django.contrib.auth as auth
-
+from zjupinche.tools import GeneralResponse
 
 
 @json_request
@@ -11,13 +11,13 @@ def login(request):
     # TODO
     # request.json['studentId']
     # request.json['password']
-    return HttpResponse('success')
+    return GeneralResponse()
 
 
 @json_request
 def signup(request):
     if not zjuAuth.auth(request.json['studentId'],request.json['password']):
-        return HttpResponse('认证失败')
+        return GeneralResponse(False,'认证失败')
     user=User.objects.create_user(
         username=request.json['studentId'],
         password=request.json['password'],
@@ -28,6 +28,6 @@ def signup(request):
     )
     user.save()
     auth.login(request, user)
-    return HttpResponse('success')
+    return GeneralResponse()
 
 
